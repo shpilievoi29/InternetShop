@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block doctitle %} Product list |  {{ block.super }}{% endblock %}
+{% block content %}
+    <form  method="post">
+{% csrf_token %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in product_list %}
+<div class="col">
+<div class="card h-100">
+                   <img src="{{ product.image}}" alt="
+{{ product.image }}" width="300" height="300">
+            <div class="card-body">
+                <p class="card-context">Price:  {{ product.price }} $</p>
+            <p class="card-text">{{ product.product_description|truncatewords:"300" }}</p>
+               <ul> <a href="{% url "product_detail" slug=product.slug %}">
+                {{product.product}}</a></ul>
+                <div class="card-footer"><a href={% url "order-create" %}>Buy </a></div>
+               </div>
+               </div>
+            </div>
+        {% endfor %}
+    </div>
+</form>
+{% endblock %}

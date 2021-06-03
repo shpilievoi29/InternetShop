@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block doctitle %}Order view |{{ block.super }}{% endblock %}
+{% block content %}
+    <li>{{ object}}</li>
+<a href="{% url "order-update" pk=order.pk %}">Update Order</a>
+<a href="{% url "order-list" %}">Back to the order list</a>
+{% endblock %}

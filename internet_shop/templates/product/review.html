@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Product detail|  {{ block.super }}{% endblock %}
+{% block content %}
+    <form action="{% url "review" %}" method="post">
+{% csrf_token %}
+    {{ form.as_p }}
+
+
+
+</form>
+{% endblock %}
