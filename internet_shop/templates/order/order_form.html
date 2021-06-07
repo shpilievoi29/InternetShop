@@ -1,11 +1,10 @@
 {% extends "base.html" %}
-{% block doctitle %}Order  {{ block.super }}{% endblock %}
+{% block doctitle %}Order Form | {{ block.super }}{% endblock %}
 {% block content %}
-    <form  method="post">
-{% csrf_token %}
+  <form class="row" method="post">
+    {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit</button>
-    <button type="reset">Reset</button>
-
-</form>
+    <input type="submit" class="btn btn-primary col-1" value="Create">
+    <a href="{% url "order-list" %}" class="col-1 btn btn-secondary">Cancel</a>
+  </form>
 {% endblock %}

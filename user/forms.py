@@ -37,7 +37,6 @@ class UserSignUpForm(UserCreationForm):
         "username",
         "lastname", "firstname",
         "email",
-        "wallet"
     ]
 
     class Meta:
