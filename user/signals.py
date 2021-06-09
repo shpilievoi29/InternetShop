@@ -7,5 +7,5 @@ from user.models import Cash
 
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
-    if created:
+    if created and not instance.is_staff:
         Cash.objects.create(username_id=instance.id)

@@ -1,14 +1,16 @@
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
+from django.views import View
+from django.views.generic import ListView, DetailView, CreateView, RedirectView
 
 from product.forms import ReviewForms
-from product.models import Product, Category, Review
+from product.models import Product, Category, Review, Cart, CartItem
 
 
 class ProductListView(ListView):
     model = Product
+    http_method_names = ["get", "head", "options", "trace"]
     template_name = "product/product.html"
 
     def get_queryset(self):
@@ -24,14 +26,6 @@ class ProductListView(ListView):
         return context
 
 
-def product_list(request):
-    context = {
-        "product_list": Product.objects.all(),
-
-    }
-    return render(request, "product/product.html", context)
-
-
 class ProductDetailView(DetailView):
     model = Product
     template_name = "product/product_detail.html"
@@ -43,28 +37,68 @@ class ProductDetailView(DetailView):
         return context
 
 
-# def product_detail(request, slug):
-#
-#     try:
-#         product = Product.objects.get(slug=slug)
-#     except Product.DoesNotExist:
-#         raise Http404("Page not found")
-#     if request.method == "POST":
-#         review_form = ReviewForms(request.POST)
-#         if review_form.is_valid():
-#             review = Review(product=product, **review_form.cleaned_data)
-#             review.save()
-#             redirect_url = reverse_lazy("product_detail", kwargs={"slug": product.slug})
-#             return HttpResponseRedirect(redirect_url)
-#         else:
-#             review_form = ReviewForms()
-#         context = {
-#             "product": product,
-#             "form": review_form,
-#
-#         }
-#         return render(request, "product/product_detail.html", context)
+class ReviewCreateView(CreateView):
+    template_name = "product_detail.html"
+    http_method_names = ["post", "head", "options", ]
+    model = Review
+    form_class = ReviewForms
+
+    def get_success_url(self):
+        return reverse_lazy("products:product_detail", kwargs={"slug": self.kwargs.get("slug")})
+
+    def form_valid(self, form):
+        slug = self.kwargs.get("slug")
+        response = HttpResponseRedirect(self.get_success_url())
+
+        if self.request.session.get(slug) is not None:
+            return response
+
+        try:
+            product = Product.objects.get(slug=slug)
+            form.instance.product = product
+
+            super(ReviewCreateView, self).form_valid(form)
+
+            max_age = 300
+            self.request.session.set_expiry(max_age)
+
+            self.request.session[slug] = slug
+            return response
+
+        except Product.DoesNotExist:
+            return Http404()
 
 
-def review(request):
-    return render(request, "product/review.html")
+class AddToCartView(RedirectView):
+    def get(self, *args, **kwargs):
+        cart = self.request.session.get("cart", {})
+        product_slug = self.kwargs.get("slug")
+        if product_slug in cart:
+            cart[product_slug] += 1
+        else:
+            cart[product_slug] = 1
+        self.request.session["cart"] = cart
+        redirect_url = self.request.headers.get('referer') or reverse_lazy(
+            "product:product_list")
+        return HttpResponseRedirect(redirect_url)
+
+
+class PurchaseView(View):
+    def get(self, request, *args, **kwargs):
+        session_cart = request.session.get('cart')
+        if session_cart is None:
+            redirect_url = self.request.headers.get('referer') or reverse_lazy(
+                "product:product_list")
+            return HttpResponseRedirect(redirect_url)
+        user = self.request.user
+        cart = Cart.objects.get_or_create(user=user, is_active=True)
+        for product_slug in session_cart:
+
+            product = Product.objects.get(slug=product_slug)
+            quantity = session_cart[product_slug]
+            cart_item = CartItem(product=product, quantity=quantity, cart=cart)
+            cart_item.save()
+            self.request.session["cart"] = {}
+        redirect_url = self.request.headers.get('referer') or reverse_lazy(
+            "product:product_list")
+        return HttpResponseRedirect(redirect_url)

@@ -11,7 +11,7 @@
       <p>{{ request.user.first_name|title }} {{ request.user.last_name|title }}</p>
         <p>Cash: {{ request.user.cash.amount}} USD</p>
       <p>Email: {{ request.user.email }}</p>
-      <a href="{% url "order-list" %}">My orders</a>
+      <a href="{% url "order:order-list" %}">My orders</a>
     </div>
   </div>
 {% endblock %}

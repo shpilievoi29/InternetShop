@@ -1,0 +1,9 @@
+<form class="row row-cols-md-auto" action="{% url "product:review" %}" method="post">
+  {% csrf_token %}
+  <div class="col-11">
+    {{ form.as_p}}
+  </div>
+  <div class="col">
+    <button type="submit" class="btn btn-primary">Post</button>
+  </div>
+</form>

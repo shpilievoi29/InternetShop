@@ -5,6 +5,6 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" class="btn btn-primary col-1" value="Create">
-    <a href="{% url "order-list" %}" class="col-1 btn btn-secondary">Cancel</a>
+    <a href="{% url "order:order-list" %}" class="col-1 btn btn-secondary">Cancel</a>
   </form>
 {% endblock %}

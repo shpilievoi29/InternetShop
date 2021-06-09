@@ -12,9 +12,12 @@
             <div class="card-body">
                 <p class="card-context">Price:  {{ product.price }} $</p>
             <p class="card-text">{{ product.product_description|truncatewords:"300" }}</p>
-               <ul> <a href="{% url "product_detail" slug=product.slug %}">
+               <ul> <a href="{% url "product:product_detail" slug=product.slug %}">
+                   <div class="card-footer"><a href=
+                           "{% url "product:add-to-cart" slug=product.slug %}">Add
+                    to cart</a></div>
                 {{product.product}}</a></ul>
-                <div class="card-footer"><a href={% url "order-create" %}>Buy </a></div>
+                <div class="card-footer"><a href={% url "order:order-create" %}>Buy </a></div>
                </div>
                </div>
             </div>

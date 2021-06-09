@@ -1,7 +1,32 @@
 {% extends "base.html" %}
-{% block doctitle %}Order view |{{ block.super }}{% endblock %}
+{% block doctitle %}Order | {{ block.super }}{% endblock %}
 {% block content %}
-    <li>{{ object}}</li>
-<a href="{% url "order-update" pk=order.pk %}">Update Order</a>
-<a href="{% url "order-list" %}">Back to the order list</a>
+  <div class="row">
+    <div class="col">
+      <h5>Order Details</h5>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      Order status: {{ object.status }}
+    </div>
+    <div class="col">
+      Product: {{ object.product }}
+    </div>
+    <div class="col">
+      Quantity: {{ object.quantity }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <p>Delivery Address:</p>
+      <p>{{ object.address|linebreaks }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <a href="{% url "order:order-update" pk=object.pk %}" class="btn btn-primary">Update Order</a>
+      <a href="{% url "order:order-delete" pk=object.pk %}" class="btn btn-danger">Cancel Order</a>
+    </div>
+  </div>
 {% endblock %}

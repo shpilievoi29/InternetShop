@@ -1,12 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView
-from django.views.generic.edit import ModelFormMixin
-from django.views.generic.list import MultipleObjectMixin
-
-from order.forms import OrderForms
 from order.models import Order
 
 
@@ -28,7 +23,7 @@ class OrderDetailView(DetailView):
     def get(self, *args, **kwargs):
         order = self.get_object()
         if order.customer != self.request.user:
-            redirect_url = reverse_lazy("order-list")
+            redirect_url = reverse_lazy("order:order-list")
             return HttpResponseRedirect(redirect_url)
 
         return super(OrderDetailView, self).get(*args, **kwargs)
@@ -51,7 +46,7 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, *args, **kwargs):
         order = self.get_object()
         if order.customer != self.request.user:
-            redirect_url = reverse_lazy("order-list")
+            redirect_url = reverse_lazy("order:order-list")
             return HttpResponseRedirect(redirect_url)
 
         return super(OrderUpdateView, self).get(*args, **kwargs)
@@ -67,13 +62,14 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
 
 class OrderDeleteView(DeleteView):
     model = Order
-    success_url = reverse_lazy("order-list")
+    success_url = reverse_lazy("order:list")
+    template_name = "order/order_confirm_detail.html"
 
     def get(self, *args, **kwargs):
         order = self.get_object()
 
         if order.customer != self.request.user:
-            redirect_url = reverse_lazy("order-list")
+            redirect_url = reverse_lazy("order:order-list")
             return HttpResponseRedirect(redirect_url)
 
         return super(OrderDeleteView, self).get(*args, **kwargs)
@@ -84,7 +80,7 @@ class OrderDeleteView(DeleteView):
         if order.status < Order.CONFIRMED:
             order.is_deleted = True
             order.save()
-            redirect_url = reverse_lazy("order-list")
+            redirect_url = reverse_lazy("order:order-list")
 
         else:
             redirect_url = order.get_absolute_url()

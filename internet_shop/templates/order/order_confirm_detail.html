@@ -6,7 +6,7 @@
     <div class="text-body">Are you sure you want to cancel this order?</div>
     <div>
       <input type="submit" class="btn btn-danger" value="Yes, Cancel this">
-      <a href="{% url "order_detail" pk=object.pk %}" class="btn btn-secondary">No, Leave it</a>
+      <a href="{% url "order:order-detail" pk=object.pk %}" class="btn btn-secondary">No, Leave it</a>
     </div>
   </form>
 {% endblock %}

@@ -53,4 +53,4 @@ class Order(models.Model):
                f"|-quantity:  {self.quantity}"
 
     def get_absolute_url(self):
-        return reverse_lazy("order-detail", kwargs={"pk": self.id})
+        return reverse_lazy("order:order-detail", kwargs={"pk": self.id})
