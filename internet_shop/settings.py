@@ -32,12 +32,19 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'order.apps.OrderConfig',
     'product.apps.ProductConfig',
+    'api.apps.APIConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'crispy_forms',
+
+
 ]
 
 MIDDLEWARE = [

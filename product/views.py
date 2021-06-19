@@ -3,9 +3,16 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, RedirectView
+from rest_framework.response import Response
+from rest_framework import status
 
 from product.forms import ReviewForms
 from product.models import Product, Category, Review, Cart, CartItem
+from rest_framework.views import APIView
+
+from rest_framework.decorators import api_view
+
+from product.serializers import ProductSerializer
 
 
 class ProductListView(ListView):
@@ -93,7 +100,6 @@ class PurchaseView(View):
         user = self.request.user
         cart = Cart.objects.get_or_create(user=user, is_active=True)
         for product_slug in session_cart:
-
             product = Product.objects.get(slug=product_slug)
             quantity = session_cart[product_slug]
             cart_item = CartItem(product=product, quantity=quantity, cart=cart)
@@ -102,3 +108,5 @@ class PurchaseView(View):
         redirect_url = self.request.headers.get('referer') or reverse_lazy(
             "product:product_list")
         return HttpResponseRedirect(redirect_url)
+
+
