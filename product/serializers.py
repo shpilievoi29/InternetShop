@@ -14,7 +14,11 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         view_name="product:product_detail",
         lookup_field="slug",
     )
-    category = ProductCategorySerializer(read_only=True, context={"request": request})
+    url_api = serializers.HyperlinkedIdentityField(
+        view_name="api:detail",
+        lookup_field="slug",
+    )
+    category = ProductCategorySerializer(read_only=True)
 
     class Meta:
         model = Product
