@@ -6,19 +6,14 @@ from product.models import Category, Product
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["category"]
+        fields = "__all__"
 
 
-class ProductSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name="product:product_detail",
-        lookup_field="slug",
+class ProductSerializer(serializers.ModelSerializer):
+
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all()
     )
-    url_api = serializers.HyperlinkedIdentityField(
-        view_name="api:detail",
-        lookup_field="slug",
-    )
-    category = ProductCategorySerializer(read_only=True)
 
     class Meta:
         model = Product

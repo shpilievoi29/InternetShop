@@ -2,6 +2,7 @@ from django.urls import path, include
 
 app_name = "api"
 
-url_patterns = [
-    path("", include("api.urls.product", namespace="product"), name="product"),
+urlpatterns = [
+    path("product/", include("api.urls.product", namespace="product"), name="product"),
+    path("user/", include("api.urls.user", namespace="user"), name="user"),
 ]
