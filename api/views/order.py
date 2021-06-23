@@ -11,4 +11,5 @@ class OrderListAPIView(ListCreateAPIView):
 class OrderDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    lookup_url_kwarg = "id"
     lookup_field = "id"
