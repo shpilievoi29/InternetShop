@@ -1,7 +1,4 @@
-import datetime
-from datetime import timezone
 
-from django.contrib import auth
 from django.db import models
 from django.urls import reverse_lazy
 
@@ -53,4 +50,4 @@ class Order(models.Model):
                f"|-quantity:  {self.quantity}"
 
     def get_absolute_url(self):
-        return reverse_lazy("order:order-detail", kwargs={"pk": self.id})
+        return reverse_lazy("order:order_detail", kwargs={"pk": self.id})
